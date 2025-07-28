@@ -114,34 +114,35 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
-      <header className="bg-white dark:bg-gray-800 shadow-md">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
+      <header className="shadow-md" style={{ backgroundColor: 'var(--card-background)' }}>
         <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
-            <Link href="/" className="text-xl font-semibold text-gray-800 dark:text-white">
+            <Link href="/" className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
               任务管理器
             </Link>
             <div className="flex items-center gap-4">
               {session ? (
                 <>
-                <span className="text-gray-800 dark:text-white">欢迎, {session.user?.name}</span>
+                <span style={{ color: 'var(--foreground)' }}>欢迎, {session.user?.name}</span>
                 {(session.user as any)?.role === 'admin' && (
-                  <Link href="/admin" className="text-gray-800 dark:text-white hover:text-indigo-500">
+                  <Link href="/admin" style={{ color: 'var(--foreground)', transition: 'color 0.2s' }} className="hover:text-indigo-500">
                     管理
                   </Link>
                 )}
                 <button
                   onClick={() => signOut()}
-                  className="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-200"
+                  className="font-semibold px-4 py-2 rounded-lg transition duration-200"
+                  style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
                 >
                   注销
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="text-gray-800 dark:text-white hover:text-indigo-500">
+                <Link href="/login" style={{ color: 'var(--foreground)', transition: 'color 0.2s' }} className="hover:text-indigo-500">
                   登录
                 </Link>
-                <Link href="/signup" className="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-200">
+                <Link href="/signup" className="font-semibold px-4 py-2 rounded-lg transition duration-200" style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}>
                   注册
                 </Link>
               </>
@@ -151,10 +152,10 @@ export default function Home() {
       </header>
       <main className="container mx-auto p-4 sm:p-6 lg:p-8">
         <header className="text-center mb-8 mt-8">
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white">团队任务管理器</h1>
+          <h1 className="text-4xl font-bold" style={{ color: 'var(--foreground)' }}>团队任务管理器</h1>
         </header>
 
-        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+        <div className="max-w-4xl mx-auto rounded-xl shadow-lg p-8" style={{ backgroundColor: 'var(--card-background)' }}>
           {session && (
             <form onSubmit={handleAddTask} className="flex items-center gap-4 mb-8">
               <input
@@ -162,11 +163,13 @@ export default function Home() {
                 value={newTaskText}
                 onChange={(e) => setNewTaskText(e.target.value)}
                 placeholder="添加新任务..."
-                className="flex-grow px-4 py-3 border-2 rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200"
+                className="flex-grow px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] transition duration-200"
+                style={{ backgroundColor: 'var(--input-background)', borderColor: 'var(--border-color)' }}
               />
               <button
                 type="submit"
-                className="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 transition duration-200 shadow-md"
+                className="font-semibold px-6 py-3 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] focus:ring-opacity-75 transition duration-200 shadow-md"
+                style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
               >
                 添加
               </button>
@@ -174,14 +177,14 @@ export default function Home() {
           )}
 
           <div className="flex justify-center gap-4 mb-8">
-            <button onClick={() => setFilter("all")} className={`px-4 py-2 rounded-lg ${filter === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>所有</button>
-            <button onClick={() => setFilter("todo")} className={`px-4 py-2 rounded-lg ${filter === 'todo' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>待办</button>
-            <button onClick={() => setFilter("in-progress")} className={`px-4 py-2 rounded-lg ${filter === 'in-progress' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>进行中</button>
-            <button onClick={() => setFilter("completed")} className={`px-4 py-2 rounded-lg ${filter === 'completed' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>已完成</button>
+            <button onClick={() => setFilter("all")} className={`px-4 py-2 rounded-lg ${filter === 'all' ? '' : ''}`} style={{ backgroundColor: filter === 'all' ? 'var(--primary-color)' : 'var(--secondary-button-bg)', color: filter === 'all' ? 'white' : 'var(--secondary-button-text)' }}>所有</button>
+            <button onClick={() => setFilter("todo")} className={`px-4 py-2 rounded-lg ${filter === 'todo' ? '' : ''}`} style={{ backgroundColor: filter === 'todo' ? 'var(--primary-color)' : 'var(--secondary-button-bg)', color: filter === 'todo' ? 'white' : 'var(--secondary-button-text)' }}>待办</button>
+            <button onClick={() => setFilter("in-progress")} className={`px-4 py-2 rounded-lg ${filter === 'in-progress' ? '' : ''}`} style={{ backgroundColor: filter === 'in-progress' ? 'var(--primary-color)' : 'var(--secondary-button-bg)', color: filter === 'in-progress' ? 'white' : 'var(--secondary-button-text)' }}>进行中</button>
+            <button onClick={() => setFilter("completed")} className={`px-4 py-2 rounded-lg ${filter === 'completed' ? '' : ''}`} style={{ backgroundColor: filter === 'completed' ? 'var(--primary-color)' : 'var(--secondary-button-bg)', color: filter === 'completed' ? 'white' : 'var(--secondary-button-text)' }}>已完成</button>
           </div>
 
           <div>
-            <h2 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">任务列表</h2>
+            <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--foreground)' }}>任务列表</h2>
             <AnimatePresence>
               {filteredTasks.map((task) => (
                 <motion.li
@@ -190,16 +193,18 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center justify-between p-4 mb-3 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm"
+                  className="flex items-center justify-between p-4 mb-3 rounded-lg shadow-sm"
+                  style={{ backgroundColor: 'var(--input-background)' }}
                 >
                   {editingTask?.id === task.id && session ? (
                     <div className="flex-grow flex flex-col gap-4">
-                      <input
-                        type="text"
-                        defaultValue={task.text}
-                        onBlur={(e) => handleUpdateTask(task.id, e.target.value, task.assignedTo, task.tags)}
-                        className="flex-grow px-3 py-2 border-2 rounded-lg bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      />
+                        <input
+                          type="text"
+                          defaultValue={task.text}
+                          onBlur={(e) => handleUpdateTask(task.id, e.target.value, task.assignedTo, task.tags)}
+                          className="flex-grow px-3 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)]"
+                          style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
+                        />
                       <div>
                         <h3 className="text-lg font-semibold mb-2">分配给:</h3>
                         <div className="flex flex-wrap gap-2">
@@ -226,10 +231,11 @@ export default function Home() {
                           type="text"
                           defaultValue={task.tags.join(', ')}
                           onBlur={(e) => handleUpdateTask(task.id, task.text, task.assignedTo, e.target.value.split(',').map(t => t.trim()))}
-                          className="flex-grow px-3 py-2 border-2 rounded-lg bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="flex-grow px-3 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)]"
+                          style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
                         />
                       </div>
-                      <button onClick={() => setEditingTask(null)} className="bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-gray-600">完成编辑</button>
+                      <button onClick={() => setEditingTask(null)} className="font-semibold px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--text-muted)', color: 'white' }}>完成编辑</button>
                     </div>
                   ) : (
                     <>
@@ -239,14 +245,16 @@ export default function Home() {
                           checked={!!task.completed}
                           onChange={() => toggleTaskCompletion(task.id)}
                           disabled={!session}
-                          className="h-6 w-6 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          className="h-6 w-6 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 ring-[var(--ring-color)]"
+                          style={{ borderColor: 'var(--border-color)', color: 'var(--primary-color)' }}
                         />
                         <span
                           className={`cursor-pointer flex-grow text-lg ${
                             task.completed
-                              ? "line-through text-gray-400 dark:text-gray-500"
-                              : "text-gray-700 dark:text-gray-300"
+                              ? "line-through"
+                              : ""
                           }`}
+                          style={{ color: task.completed ? 'var(--text-completed)' : 'var(--foreground)' }}
                         >
                           {task.text}
                         </span>
@@ -254,21 +262,23 @@ export default function Home() {
                       <div className="flex items-center gap-4">
                         <div className="flex gap-2">
                           {task.tags.map(tag => (
-                            <span key={tag} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">{tag}</span>
+                            <span key={tag} className="text-xs font-semibold mr-2 px-2.5 py-0.5 rounded" style={{ backgroundColor: 'var(--blue-tag-bg)', color: 'var(--blue-tag-text)' }}>{tag}</span>
                           ))}
                         </div>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{getAssigneeNames(task.assignedTo)}</span>
+                        <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{getAssigneeNames(task.assignedTo)}</span>
                         {session && (
                           <>
                             <button
                               onClick={() => setEditingTask(task)}
-                              className="bg-yellow-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-200 shadow-sm"
+                              className="font-semibold px-4 py-2 rounded-lg transition duration-200 shadow-sm"
+                              style={{ backgroundColor: 'var(--yellow-color)', color: 'white' }}
                             >
                               编辑
                             </button>
                             <button
                               onClick={() => handleDeleteTask(task.id)}
-                              className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75 transition duration-200 shadow-sm"
+                              className="font-semibold px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] focus:ring-opacity-75 transition duration-200 shadow-sm"
+                              style={{ backgroundColor: 'var(--red-color)', color: 'white' }}
                             >
                               删除
                             </button>
