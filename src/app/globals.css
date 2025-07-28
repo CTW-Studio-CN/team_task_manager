@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+*,
+::before,
+::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.3s;
+}
+
+/* Light Mode Base Variables */
+[data-theme^='light'] {
+  --background: #ffffff;
+  --foreground: #171717;
+  --secondary-button-bg: #e5e7eb; /* gray-200 */
+  --secondary-button-text: #1f2937; /* gray-800 */
+  --card-background: #ffffff;
+  --border-color: #d1d5db; /* gray-300 */
+  --input-background: #f9fafb; /* gray-50 */
+  --text-muted: #6b7280; /* gray-500 */
+  --text-completed: #9ca3af; /* gray-400 */
+  --yellow-color: #f59e0b; /* yellow-500 */
+  --yellow-hover-color: #d97706; /* yellow-600 */
+  --red-color: #dc2626; /* red-600 */
+  --red-hover-color: #b91c1c; /* red-700 */
+  --blue-tag-bg: #e0f2fe; /* blue-100 */
+  --blue-tag-text: #1e40af; /* blue-800 */
+}
+
+/* Dark Mode Base Variables */
+[data-theme^='dark'] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --secondary-button-bg: #374151; /* gray-700 */
+  --secondary-button-text: #f3f4f6; /* gray-100 */
+  --card-background: #1f2937; /* gray-800 */
+  --border-color: #4b5563; /* gray-600 */
+  --input-background: #374151; /* gray-700 */
+  --text-muted: #9ca3af; /* gray-400 */
+  --text-completed: #6b7280; /* gray-500 */
+  --yellow-color: #fcd34d; /* yellow-300 */
+  --yellow-hover-color: #fbbf24; /* yellow-400 */
+  --red-color: #ef4444; /* red-500 */
+  --red-hover-color: #dc2626; /* red-600 */
+  --blue-tag-bg: #1e3a8a; /* blue-900 */
+  --blue-tag-text: #bfdbfe; /* blue-200 */
 }

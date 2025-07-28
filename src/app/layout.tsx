@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthSessionProvider from "./AuthSessionProvider";
+import { ThemeProvider } from "./ThemeProvider"; // 导入 ThemeProvider
+import ThemeToggleButton from "./ThemeToggleButton"; // 导入 ThemeToggleButton
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +30,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthSessionProvider>{children}</AuthSessionProvider>
+        <AuthSessionProvider>
+          <ThemeProvider>
+            <ThemeToggleButton /> {/* 添加主题切换按钮 */}
+            {children}
+          </ThemeProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );
