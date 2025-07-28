@@ -12,5 +12,12 @@
     "email": "user@example.com",
     "password": "password",
     "role": "user"
+  },
+  {
+    "id": "3",
+    "name": "1",
+    "email": "1@qq.com",
+    "password": "1",
+    "role": "user"
   }
 ]
