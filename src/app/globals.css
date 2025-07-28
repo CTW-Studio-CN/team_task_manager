@@ -1,12 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  /* Default Light Theme (Blue) */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: all 0.3s ease-in-out; /* Apply transition to all properties */
+}
+
+[data-theme] {
+  transition:
+    --primary-color 0.3s ease,
+    --primary-hover-color 0.3s ease,
+    --ring-color 0.3s ease,
+    --secondary-button-bg 0.3s ease,
+    --secondary-button-text 0.3s ease,
+    --card-background 0.3s ease,
+    --border-color 0.3s ease,
+    --input-background 0.3s ease,
+    --text-muted 0.3s ease,
+    --text-completed 0.3s ease,
+    --yellow-color 0.3s ease,
+    --yellow-hover-color 0.3s ease,
+    --red-color 0.3s ease,
+    --red-hover-color 0.3s ease,
+    --blue-tag-bg 0.3s ease,
+    --blue-tag-text 0.3s ease;
+}
+
+/* Light Mode Base Variables */
+[data-theme^='light'] {
   --background: #ffffff;
   --foreground: #171717;
-  --primary-color: #4f46e5; /* indigo-600 */
-  --primary-hover-color: #4338ca; /* indigo-700 */
-  --ring-color: var(--primary-color);
   --secondary-button-bg: #e5e7eb; /* gray-200 */
   --secondary-button-text: #1f2937; /* gray-800 */
   --card-background: #ffffff;
@@ -22,12 +51,10 @@
   --blue-tag-text: #1e40af; /* blue-800 */
 }
 
-[data-theme='dark'] {
+/* Dark Mode Base Variables */
+[data-theme^='dark'] {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --primary-color: #6366f1; /* indigo-500 */
-  --primary-hover-color: #4f46e5; /* indigo-600 */
-  --ring-color: var(--primary-color);
   --secondary-button-bg: #374151; /* gray-700 */
   --secondary-button-text: #f3f4f6; /* gray-100 */
   --card-background: #1f2937; /* gray-800 */
@@ -41,45 +68,4 @@
   --red-hover-color: #dc2626; /* red-600 */
   --blue-tag-bg: #1e3a8a; /* blue-900 */
   --blue-tag-text: #bfdbfe; /* blue-200 */
-}
-
-[data-theme='green'] {
-  --primary-color: #10b981; /* emerald-500 */
-  --primary-hover-color: #059669; /* emerald-600 */
-  --ring-color: var(--primary-color);
-  --secondary-button-bg: #d1fae5; /* emerald-100 */
-  --secondary-button-text: #065f46; /* emerald-800 */
-  --yellow-color: #facc15; /* yellow-400 */
-  --yellow-hover-color: #eab308; /* yellow-500 */
-  --red-color: #ef4444; /* red-500 */
-  --red-hover-color: #dc2626; /* red-600 */
-  --blue-tag-bg: #dbeafe; /* blue-100 */
-  --blue-tag-text: #1e40af; /* blue-800 */
-}
-
-[data-theme='green'][data-theme='dark'] {
-  --primary-color: #34d399; /* emerald-400 */
-  --primary-hover-color: #10b981; /* emerald-500 */
-  --ring-color: var(--primary-color);
-  --secondary-button-bg: #064e3b; /* emerald-900 */
-  --secondary-button-text: #a7f3d0; /* emerald-200 */
-  --yellow-color: #fde047; /* yellow-200 */
-  --yellow-hover-color: #facc15; /* yellow-400 */
-  --red-color: #f87171; /* red-400 */
-  --red-hover-color: #ef4444; /* red-500 */
-  --blue-tag-bg: #1e3a8a; /* blue-900 */
-  --blue-tag-text: #bfdbfe; /* blue-200 */
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

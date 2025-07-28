@@ -4,48 +4,74 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 type ThemeContextType = {
   theme: string;
-  toggleTheme: () => void;
-  setTheme: (theme: string) => void;
+  toggleMode: () => void;
+  setColor: (color: string) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setThemeState] = useState("light"); // Default theme
+  const [theme, setTheme] = useState("light-blue"); // Default theme
 
   useEffect(() => {
-    // Check for saved theme in localStorage or system preference
     const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let initialTheme = "light-blue"; // Default theme
 
     if (savedTheme) {
-      setThemeState(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    } else if (prefersDark) {
-      setThemeState("dark");
-      document.documentElement.setAttribute("data-theme", "dark");
+      initialTheme = savedTheme;
     } else {
-      document.documentElement.setAttribute("data-theme", "light");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      initialTheme = prefersDark ? "dark-blue" : "light-blue";
     }
+    
+    const [mode, color] = initialTheme.split("-");
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+    // Ensure initial color is applied via setColor to handle custom hex codes
+    setColor(color); 
   }, []);
 
-  const setTheme = (newTheme: string) => {
-    setThemeState(newTheme);
+  const applyTheme = (newTheme: string) => {
+    setTheme(newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
   };
 
-  const toggleTheme = () => {
-    setThemeState((prevTheme) => {
-      const newTheme = prevTheme === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", newTheme);
-      localStorage.setItem("theme", newTheme);
-      return newTheme;
-    });
+  const toggleMode = () => {
+    const [mode, color] = theme.split("-");
+    const newMode = mode === "dark" ? "light" : "dark";
+    applyTheme(`${newMode}-${color}`);
+  };
+
+  const colorMap: { [key: string]: string } = {
+    blue: "#4f46e5", // indigo-600
+    green: "#10b981", // emerald-500
+    red: "#ef4444", // red-500
+    purple: "#a855f7", // purple-500
+    orange: "#f97316", // orange-500
+    pink: "#ec4899", // pink-500
+    teal: "#14b8a6", // teal-500
+    cyan: "#06b6d4", // cyan-500
+  };
+
+  const setColor = (newColor: string) => {
+    const [mode] = theme.split("-");
+    const fullThemeName = `${mode}-${newColor}`;
+    applyTheme(fullThemeName);
+
+    let primaryColorValue = newColor;
+    if (colorMap[newColor]) {
+      primaryColorValue = colorMap[newColor];
+    }
+
+    document.documentElement.style.setProperty("--primary-color", primaryColorValue);
+    // For hover, a simple darkening or lightening can be applied, or define specific hover colors in colorMap
+    document.documentElement.style.setProperty("--primary-hover-color", primaryColorValue + "d0"); // Simple hover effect
+    document.documentElement.style.setProperty("--ring-color", primaryColorValue);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleMode, setColor }}>
       {children}
     </ThemeContext.Provider>
   );
