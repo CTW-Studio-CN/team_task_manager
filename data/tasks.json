@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "text": "学习 Next.js",
+    "completed": true,
+    "status": "completed",
+    "assignedTo": "2"
+  },
+  {
+    "id": 2,
+    "text": "构建任务管理器",
+    "completed": false,
+    "status": "in-progress",
+    "assignedTo": "1"
+  },
+  {
+    "id": 3,
+    "text": "部署应用",
+    "completed": false,
+    "status": "todo",
+    "assignedTo": "1"
+  }
+]
