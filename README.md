@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Team Task Manager
 
-## Getting Started
+这是一个使用 Next.js 构建的团队任务管理应用。它提供用户认证、任务分配和管理等功能，旨在帮助团队更高效地协作。
 
-First, run the development server:
+## ✨ 功能特性
+
+*   **用户认证**: 支持用户注册、登录和会话管理 (NextAuth.js)。
+*   **任务管理**: 创建、查看、更新和删除任务。
+*   **用户管理**: 管理系统中的所有用户。
+*   **管理后台**: 为管理员提供专属的管理界面。
+*   **动态主题**: 支持明亮/黑暗模式切换。
+*   **颜色定制**: 允许用户通过颜色选择器自定义界面颜色。
+
+## 🛠️ 技术栈
+
+*   **框架**: [Next.js](https://nextjs.org/) 15
+*   **UI**: [React](https://react.dev/) 19
+*   **样式**: [Tailwind CSS](https://tailwindcss.com/) 4
+*   **认证**: [NextAuth.js](https://next-auth.js.org/)
+*   **动画**: [Framer Motion](https://www.framer.com/motion/)
+*   **语言**: [TypeScript](https://www.typescriptlang.org/)
+
+## 🚀 如何开始
+
+### 1. 环境准备
+
+确保你的开发环境已安装 [Node.js](https://nodejs.org/) (版本 >= 20) 和 npm。
+
+### 2. 克隆项目
+
+```bash
+git clone https://code.ctw.ink/CTW_Studio/team_task_manager.git
+cd team_task_manager
+```
+
+### 3. 安装依赖
+
+在项目根目录下运行以下命令来安装所有依赖：
+
+```bash
+npm install
+```
+
+### 4. 配置环境变量
+
+复制 `.env.local.example` (如果存在的话) 为 `.env.local`，并根据需要填写环境变量。至少需要配置 `NEXTAUTH_SECRET` 和 `NEXTAUTH_URL`。
+
+```env
+# .env.local
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET= # 在这里生成一个安全的随机字符串
+```
+
+### 5. 启动开发服务器
+
+运行以下命令来启动开发服务器：
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+现在，在浏览器中打开 [http://localhost:3000](http://localhost:3000) 即可看到应用。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📜 可用脚本
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   `npm run dev`: 启动开发服务器 (使用 Turbopack)。
+*   `npm run build`: 构建生产版本的应用。
+*   `npm run start`: 启动生产服务器。
+*   `npm run lint`: 运行 ESLint 进行代码检查。
 
-## Learn More
+## 📁 项目结构
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+/
+├── data/                 # 存放 JSON 格式的模拟数据
+│   ├── tasks.json
+│   └── users.json
+├── public/               # 存放静态资源
+├── src/
+│   ├── app/              # Next.js App Router
+│   │   ├── api/          # API 路由
+│   │   ├── components/   # 可复用的组件
+│   │   ├── lib/          # 辅助函数和工具库
+│   │   ├── (pages)/      # 页面路由 (如 login, admin)
+│   │   └── layout.tsx    # 全局布局
+│   │   └── page.tsx      # 主页
+│   └── ...
+├── .env.local            # 本地环境变量
+├── next.config.ts        # Next.js 配置文件
+├── package.json          # 项目依赖和脚本
+└── README.md             # 项目说明文档

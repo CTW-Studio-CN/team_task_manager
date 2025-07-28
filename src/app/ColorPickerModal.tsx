@@ -34,7 +34,6 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ onClose, onColorSel
   };
 
   return (
-    <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -87,7 +86,6 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ onClose, onColorSel
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
   );
 };
 
