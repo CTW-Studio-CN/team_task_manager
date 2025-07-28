@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useTheme } from "./ThemeProvider";
-import ColorPickerModal from "./ColorPickerModal"; // 假设的颜色选择器组件
+import ColorPickerModal from "./ColorPickerModal";
 
 const ThemeToggleButton = () => {
   const { theme, toggleMode, setColor } = useTheme();
@@ -20,7 +20,7 @@ const ThemeToggleButton = () => {
 
   const handleColorSelect = (color: string) => {
     setColor(color);
-    // ColorPickerModal will handle its own closing animation
+    handleCloseColorPicker();
   };
 
   return (
@@ -42,12 +42,23 @@ const ThemeToggleButton = () => {
         <span className="text-xl">🎨</span>
       </button>
 
-      {showColorPicker && (
+      <div
+        className={`fixed inset-0 z-40 transition-opacity duration-300 ease-out ${
+          showColorPicker ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={handleCloseColorPicker}
+      ></div>
+
+      <div
+        className={`fixed inset-0 flex items-center justify-center z-50 transition-all duration-300 ease-out ${
+          showColorPicker ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
+        }`}
+      >
         <ColorPickerModal
           onClose={handleCloseColorPicker}
           onColorSelect={handleColorSelect}
         />
-      )}
+      </div>
     </div>
   );
 };

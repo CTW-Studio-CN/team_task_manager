@@ -64,10 +64,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       primaryColorValue = colorMap[newColor];
     }
 
-    document.documentElement.style.setProperty("--primary-color", primaryColorValue);
-    // For hover, a simple darkening or lightening can be applied, or define specific hover colors in colorMap
-    document.documentElement.style.setProperty("--primary-hover-color", primaryColorValue + "d0"); // Simple hover effect
-    document.documentElement.style.setProperty("--ring-color", primaryColorValue);
+    // 使用 requestAnimationFrame 确保平滑过渡
+    requestAnimationFrame(() => {
+      document.documentElement.style.setProperty("--primary-color", primaryColorValue);
+      document.documentElement.style.setProperty("--primary-hover-color", primaryColorValue + "d0");
+      document.documentElement.style.setProperty("--ring-color", primaryColorValue);
+    });
   };
 
   return (
