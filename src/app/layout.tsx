@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Team Task Manager",
-  description: "A team task manager built with Next.js",
+  title: "团队任务管理器",
+  description: "基于 Next.js 构建的团队任务管理系统",
 };
 
 export default function RootLayout({
