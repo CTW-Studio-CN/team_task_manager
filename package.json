@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "framer-motion": "^12.23.9",
     "next": "15.4.4",
     "next-auth": "^4.24.11",
     "react": "19.1.0",
