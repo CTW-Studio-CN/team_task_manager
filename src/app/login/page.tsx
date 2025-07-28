@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -32,6 +33,11 @@ export default function LoginPage() {
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">登录</h1>
         {error && <p className="bg-red-500 text-white p-3 rounded-md mb-4">{error}</p>}
+        <div className="flex justify-between items-center mb-4">
+          <button onClick={() => router.back()} className="text-sm text-indigo-600 hover:text-indigo-500">
+            &larr; 返回
+          </button>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
@@ -78,6 +84,12 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+        <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+          还没有账户?{' '}
+          <Link href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+            立即注册
+          </Link>
+        </p>
       </div>
     </div>
   );

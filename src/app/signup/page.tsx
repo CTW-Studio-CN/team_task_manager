@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -14,7 +15,7 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
 
-    const res = await fetch("/api/auth/signup", {
+    const res = await fetch("/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,6 +34,11 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+        <div className="flex justify-between items-center mb-4">
+          <button onClick={() => router.back()} className="text-sm text-indigo-600 hover:text-indigo-500">
+            &larr; 返回
+          </button>
+        </div>
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">注册</h1>
         {error && <p className="bg-red-500 text-white p-3 rounded-md mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -99,6 +105,12 @@ export default function SignupPage() {
             </button>
           </div>
         </form>
+        <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+          已经有账户了?{' '}
+          <Link href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+            立即登录
+          </Link>
+        </p>
       </div>
     </div>
   );
