@@ -5,6 +5,9 @@ import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Task, User, Comment } from "./lib/definitions";
+import Statistics from "./components/Statistics";
+import ProjectSelector from "./components/ProjectSelector";
+import RecentComments from "./components/RecentComments";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -17,18 +20,26 @@ export default function Home() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newCommentText, setNewCommentText] = useState("");
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
 
-  useEffect(() => {
-    fetch("/api/tasks")
+  const fetchTasks = (projectId: number | null = null) => {
+    let url = "/api/tasks";
+    if (projectId) {
+      url += `?projectId=${projectId}`;
+    }
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setTasks(data);
-        setFilteredTasks(data);
       });
+  };
+
+  useEffect(() => {
+    fetchTasks(selectedProjectId);
     fetch("/api/users")
       .then((res) => res.json())
       .then((data) => setUsers(data));
-  }, []);
+  }, [selectedProjectId]);
 
   useEffect(() => {
     let filtered = tasks;
@@ -40,31 +51,19 @@ export default function Home() {
     setFilteredTasks(filtered);
   }, [tasks, filter]);
 
-  const fetchTasks = () => {
-    fetch("/api/tasks")
-      .then((res) => res.json())
-      .then((data) => {
-        setTasks(data);
-      });
-  };
-
-  useEffect(() => {
-    fetchTasks();
-    fetch("/api/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data));
-  }, []);
-
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newTaskText.trim() === "" || !session) return;
     const res = await fetch("/api/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: newTaskText }),
+      body: JSON.stringify({
+        text: newTaskText,
+        projectId: selectedProjectId,
+      }),
     });
     if (res.ok) {
-      fetchTasks();
+      fetchTasks(selectedProjectId);
       setNewTaskText("");
     }
   };
@@ -77,7 +76,7 @@ export default function Home() {
       body: JSON.stringify(task),
     });
     if (res.ok) {
-      fetchTasks();
+      fetchTasks(selectedProjectId);
     }
     setEditingTask(null);
   };
@@ -139,7 +138,7 @@ export default function Home() {
       body: JSON.stringify({ id }),
     });
     if (res.ok) {
-      fetchTasks();
+      fetchTasks(selectedProjectId);
     }
   };
   
@@ -189,30 +188,38 @@ export default function Home() {
         </nav>
       </header>
       <main className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <header className="text-center mb-8 mt-8">
-          <h1 className="text-4xl font-bold" style={{ color: 'var(--foreground)' }}>团队任务管理器</h1>
-        </header>
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="lg:w-1/4 order-1 lg:order-1 flex flex-col gap-8">
+            <Statistics />
+            <div style={{ backgroundColor: 'var(--card-background)' }} className="rounded-xl shadow-lg p-6">
+              <ProjectSelector onSelectProject={setSelectedProjectId} />
+            </div>
+          </div>
+          <div className="lg:w-1/2 order-2 lg:order-2">
+            <header className="text-center mb-8 mt-8">
+              <h1 className="text-4xl font-bold" style={{ color: 'var(--foreground)' }}>团队任务管理器</h1>
+            </header>
 
-        <div className="max-w-4xl mx-auto rounded-xl shadow-lg p-8" style={{ backgroundColor: 'var(--card-background)' }}>
-          {session && (
-            <form onSubmit={handleAddTask} className="flex items-center gap-4 mb-8">
-              <input
-                type="text"
-                value={newTaskText}
-                onChange={(e) => setNewTaskText(e.target.value)}
-                placeholder="添加新任务..."
-                className="flex-grow px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] transition duration-200"
-                style={{ backgroundColor: 'var(--input-background)', borderColor: 'var(--border-color)' }}
-              />
-              <button
-                type="submit"
-                className="font-semibold px-6 py-3 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] focus:ring-opacity-75 transition duration-200 shadow-md"
-                style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
-              >
-                添加
-              </button>
-            </form>
-          )}
+            <div className="rounded-xl shadow-lg p-8" style={{ backgroundColor: 'var(--card-background)' }}>
+              {session && (
+                <form onSubmit={handleAddTask} className="flex items-center gap-4 mb-8">
+                  <input
+                    type="text"
+                    value={newTaskText}
+                    onChange={(e) => setNewTaskText(e.target.value)}
+                    placeholder="添加新任务..."
+                    className="flex-grow px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] transition duration-200"
+                    style={{ backgroundColor: 'var(--input-background)', borderColor: 'var(--border-color)' }}
+                  />
+                  <button
+                    type="submit"
+                    className="font-semibold px-6 py-3 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] focus:ring-opacity-75 transition duration-200 shadow-md"
+                    style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
+                  >
+                    添加
+                  </button>
+                </form>
+              )}
 
           <div className="flex justify-center gap-4 mb-8">
             <button onClick={() => setFilter("all")} className={`px-4 py-2 rounded-lg ${filter === 'all' ? '' : ''}`} style={{ backgroundColor: filter === 'all' ? 'var(--primary-color)' : 'var(--secondary-button-bg)', color: filter === 'all' ? 'white' : 'var(--secondary-button-text)' }}>所有</button>
@@ -299,6 +306,39 @@ export default function Home() {
                         </div>
                       </div>
                       <button onClick={() => setEditingTask(null)} className="font-semibold px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--text-muted)', color: 'white' }}>完成编辑</button>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2">附件:</h3>
+                        <input
+                          type="file"
+                          multiple
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            const newAttachments = files.map(file => ({
+                              name: file.name,
+                              url: URL.createObjectURL(file),
+                            }));
+                            handleUpdateTask({ ...task, attachments: [...(task.attachments || []), ...newAttachments] });
+                          }}
+                          className="w-full px-3 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)]"
+                          style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
+                        />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {task.attachments?.map((attachment, index) => (
+                            <div key={index} className="flex items-center gap-2 bg-gray-200 dark:bg-gray-700 rounded-lg px-2 py-1">
+                              <a href={attachment.url} target="_blank" rel="noopener noreferrer" className="text-sm">{attachment.name}</a>
+                              <button
+                                onClick={() => {
+                                  const newAttachments = task.attachments?.filter((_, i) => i !== index);
+                                  handleUpdateTask({ ...task, attachments: newAttachments });
+                                }}
+                                className="text-red-500 hover:text-red-700 font-bold"
+                              >
+                                X
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <>
@@ -321,6 +361,11 @@ export default function Home() {
                         >
                           {task.text}
                         </span>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {task.attachments?.map((attachment, index) => (
+                            <a key={index} href={attachment.url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline">{attachment.name}</a>
+                          ))}
+                        </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex gap-2">
@@ -432,7 +477,12 @@ export default function Home() {
               </div>
             </motion.div>
           )}
+          </div>
         </div>
+        <div className="lg:w-1/4 order-3 lg:order-3 flex-col gap-8">
+          <RecentComments />
+        </div>
+      </div>
       </main>
     </div>
   );

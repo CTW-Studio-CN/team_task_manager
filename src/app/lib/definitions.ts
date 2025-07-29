@@ -7,6 +7,14 @@ export type Task = {
   tags: string[];
   dueDate?: string;
   priority?: 'low' | 'medium' | 'high';
+  projectId?: number;
+  attachments?: { name: string; url: string }[];
+};
+
+export type Project = {
+  id: number;
+  name: string;
+  description?: string;
 };
 
 export type User = {
