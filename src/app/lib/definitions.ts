@@ -4,7 +4,7 @@ export type Task = {
   completed: boolean;
   status: 'todo' | 'inprogress' | 'done';
   assignedTo: string[];
-  tags: string[];
+  tags: { name: string; color: string }[];
   dueDate?: string;
   priority?: 'low' | 'medium' | 'high';
   projectId?: number;

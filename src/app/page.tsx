@@ -272,13 +272,52 @@ export default function Home() {
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold mb-2">标签:</h3>
-                        <input
-                          type="text"
-                          defaultValue={task.tags.join(', ')}
-                          onBlur={(e) => handleUpdateTask({ ...task, tags: e.target.value.split(',').map(t => t.trim()) })}
-                          className="flex-grow px-3 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)]"
-                          style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
-                        />
+                        {task.tags.map((tag, index) => (
+                          <div key={index} className="flex items-center gap-2 mb-2">
+                            <input
+                              type="text"
+                              defaultValue={tag.name}
+                              onBlur={(e) => {
+                                const newTags = [...task.tags];
+                                newTags[index].name = e.target.value;
+                                handleUpdateTask({ ...task, tags: newTags });
+                              }}
+                              className="flex-grow px-3 py-2 border-2 rounded-lg"
+                              style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
+                            />
+                            <input
+                              type="color"
+                              defaultValue={tag.color}
+                              onBlur={(e) => {
+                                const newTags = [...task.tags];
+                                newTags[index].color = e.target.value;
+                                handleUpdateTask({ ...task, tags: newTags });
+                              }}
+                              className="w-10 h-10 p-1 border-2 rounded-lg"
+                              style={{ borderColor: 'var(--border-color)' }}
+                            />
+                            <button
+                              onClick={() => {
+                                const newTags = task.tags.filter((_, i) => i !== index);
+                                handleUpdateTask({ ...task, tags: newTags });
+                              }}
+                              className="px-2 py-1 rounded-lg"
+                              style={{ backgroundColor: 'var(--red-color)', color: 'white' }}
+                            >
+                              X
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const newTags = [...task.tags, { name: '新标签', color: '#ffffff' }];
+                            handleUpdateTask({ ...task, tags: newTags });
+                          }}
+                          className="px-4 py-2 rounded-lg"
+                          style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
+                        >
+                          添加标签
+                        </button>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -345,7 +384,7 @@ export default function Home() {
                       <div className="flex items-center gap-4">
                         <input
                           type="checkbox"
-                          checked={!!task.completed}
+                          checked={task?.completed ?? false}
                           onChange={() => toggleTaskCompletion(task)}
                           disabled={!session}
                           className="h-6 w-6 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 ring-[var(--ring-color)]"
@@ -370,7 +409,7 @@ export default function Home() {
                       <div className="flex items-center gap-4">
                         <div className="flex gap-2">
                           {task.tags.map(tag => (
-                            <span key={tag} className="text-xs font-semibold mr-2 px-2.5 py-0.5 rounded" style={{ backgroundColor: 'var(--blue-tag-bg)', color: 'var(--blue-tag-text)' }}>{tag}</span>
+                            <span key={tag.name} className="text-xs font-semibold mr-2 px-2.5 py-0.5 rounded" style={{ backgroundColor: tag.color, color: 'white' }}>{tag.name}</span>
                           ))}
                         </div>
                         {task.priority && (
@@ -389,7 +428,7 @@ export default function Home() {
                         )}
                         <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{getAssigneeNames(task.assignedTo)}</span>
                         {session && (
-                          <>
+                          <div className="flex items-center gap-2 flex-shrink-0">
                             <button
                               onClick={() => handleSelectTask(task)}
                               className="font-semibold px-4 py-2 rounded-lg transition duration-200 shadow-sm"
@@ -411,7 +450,7 @@ export default function Home() {
                             >
                               删除
                             </button>
-                          </>
+                          </div>
                         )}
                       </div>
                     </>

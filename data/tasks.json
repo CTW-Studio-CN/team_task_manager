@@ -2,8 +2,8 @@
   {
     "id": 1,
     "text": "设计一个新的 logo",
-    "completed": true,
-    "status": "done",
+    "completed": false,
+    "status": "todo",
     "assignedTo": [
       "1"
     ],

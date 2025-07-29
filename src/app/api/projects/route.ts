@@ -29,3 +29,27 @@ export async function POST(req: Request) {
   writeData(projects);
   return NextResponse.json(newProject, { status: 201 });
 }
+
+export async function PUT(req: Request) {
+  const { id, name } = await req.json();
+  const projects = readData();
+  const projectIndex = projects.findIndex((p: any) => p.id === id);
+  if (projectIndex === -1) {
+    return NextResponse.json({ message: 'Project not found' }, { status: 404 });
+  }
+  projects[projectIndex].name = name;
+  writeData(projects);
+  return NextResponse.json(projects[projectIndex]);
+}
+
+export async function DELETE(req: Request) {
+  const { id } = await req.json();
+  let projects = readData();
+  const projectExists = projects.some((p: any) => p.id === id);
+  if (!projectExists) {
+    return NextResponse.json({ message: 'Project not found' }, { status: 404 });
+  }
+  projects = projects.filter((p: any) => p.id !== id);
+  writeData(projects);
+  return NextResponse.json({ message: 'Project deleted successfully' });
+}

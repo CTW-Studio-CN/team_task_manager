@@ -7,13 +7,27 @@ export default function Statistics() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
-  useEffect(() => {
+  const fetchTasks = () => {
     fetch("/api/tasks")
       .then((res) => res.json())
       .then((data) => setTasks(data));
+  };
+
+  const fetchUsers = () => {
     fetch("/api/users")
       .then((res) => res.json())
       .then((data) => setUsers(data));
+  };
+
+  useEffect(() => {
+    fetchTasks();
+    fetchUsers();
+
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 5000); // 每5秒刷新一次
+
+    return () => clearInterval(interval);
   }, []);
 
   const totalTasks = tasks.length;
