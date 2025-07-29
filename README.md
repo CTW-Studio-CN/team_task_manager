@@ -29,7 +29,7 @@
 ### 2. 克隆项目
 
 ```bash
-git clone https://code.ctw.ink/CTW_Studio/team_task_manager.git
+git clone https://github.com/CTW-Studio-CN/team_task_manager.git
 cd team_task_manager
 ```
 
