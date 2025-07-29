@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { users } from "../../../lib/users";
 
 const handler = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
