@@ -51,6 +51,10 @@ export default function Home() {
     setFilteredTasks(filtered);
   }, [tasks, filter]);
 
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const totalTasks = tasks.length;
+  const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newTaskText.trim() === "" || !session) return;
@@ -70,10 +74,16 @@ export default function Home() {
 
   const handleUpdateTask = async (task: Task) => {
     if (!session) return;
+
+    const updatedTask = {
+      ...task,
+      completed: task.status === 'done',
+    };
+
     const res = await fetch(`/api/tasks`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(task),
+      body: JSON.stringify(updatedTask),
     });
     if (res.ok) {
       fetchTasks(selectedProjectId);
@@ -190,7 +200,7 @@ export default function Home() {
       <main className="container mx-auto p-4 sm:p-6 lg:p-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-1/4 order-1 lg:order-1 flex flex-col gap-8">
-            <Statistics />
+            <Statistics progress={progress} />
             <div style={{ backgroundColor: 'var(--card-background)' }} className="rounded-xl shadow-lg p-6">
               <ProjectSelector onSelectProject={setSelectedProjectId} />
             </div>
@@ -233,10 +243,11 @@ export default function Home() {
             <AnimatePresence>
               {filteredTasks.map((task) => (
                 <motion.li
+                  layout
                   key={task.id}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, x: -100 }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 }}
                   transition={{ duration: 0.3 }}
                   className="flex items-center justify-between p-4 mb-3 rounded-lg shadow-sm"
                   style={{ backgroundColor: 'var(--input-background)' }}
@@ -343,6 +354,19 @@ export default function Home() {
                             <option value="high">高</option>
                           </select>
                         </div>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">状态:</h3>
+                          <select
+                            defaultValue={task.status}
+                            onBlur={(e) => handleUpdateTask({ ...task, status: e.target.value as 'todo' | 'inprogress' | 'done' })}
+                            className="w-full px-3 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)]"
+                            style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
+                          >
+                            <option value="todo">待办</option>
+                            <option value="inprogress">进行中</option>
+                            <option value="done">已完成</option>
+                          </select>
+                        </div>
                       </div>
                       <button onClick={() => setEditingTask(null)} className="font-semibold px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--text-muted)', color: 'white' }}>完成编辑</button>
                       <div>
@@ -408,8 +432,8 @@ export default function Home() {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex gap-2">
-                          {task.tags.map(tag => (
-                            <span key={tag.name} className="text-xs font-semibold mr-2 px-2.5 py-0.5 rounded" style={{ backgroundColor: tag.color, color: 'white' }}>{tag.name}</span>
+                          {task.tags.map((tag, index) => (
+                            <span key={`${tag.name}-${index}`} className="text-xs font-semibold mr-2 px-2.5 py-0.5 rounded" style={{ backgroundColor: tag.color, color: 'white' }}>{tag.name}</span>
                           ))}
                         </div>
                         {task.priority && (

@@ -75,33 +75,33 @@ export default function ProjectSelector({ onSelectProject }: ProjectSelectorProp
 
   return (
     <div className="mb-4">
-      <label htmlFor="project-selector" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-        选择项目
-      </label>
-      <div className="flex gap-2">
-        <select
-          id="project-selector"
-          value={selectedProjectId || ''}
-          onChange={handleSelectChange}
-          style={{
-            backgroundColor: 'var(--input-background)',
-            borderColor: 'var(--border-color)',
-            color: 'var(--foreground)'
-          }}
-          className="block w-full pl-3 pr-10 py-2 text-base border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] transition duration-200"
-        >
-          <option value="">所有项目</option>
-          {projects.map(project => (
-            <option key={project.id} value={project.id}>
-              {project.name}
-            </option>
-          ))}
-        </select>
+      <h2 style={{ color: 'var(--foreground)' }} className="text-2xl font-semibold mb-4">选择项目</h2>
+      <div className="flex items-center gap-2">
+        <div className="flex-grow">
+          <select
+            id="project-selector"
+            value={selectedProjectId || ''}
+            onChange={handleSelectChange}
+            style={{
+              backgroundColor: 'var(--input-background)',
+              borderColor: 'var(--border-color)',
+              color: 'var(--foreground)'
+            }}
+            className="block w-full pl-3 pr-10 py-2 text-base border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] transition duration-200"
+          >
+            <option value="">所有项目</option>
+            {projects.map(project => (
+              <option key={project.id} value={project.id}>
+                {project.name}
+              </option>
+            ))}
+          </select>
+        </div>
         {selectedProjectId && (
-          <>
+          <div className="flex-shrink-0 flex gap-2">
             <button onClick={() => setEditingProject(projects.find(p => p.id === selectedProjectId) || null)} className="px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--yellow-color)', color: 'white' }}>编辑</button>
             <button onClick={() => handleDeleteProject(selectedProjectId)} className="px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--red-color)', color: 'white' }}>删除</button>
-          </>
+          </div>
         )}
       </div>
 
