@@ -37,3 +37,21 @@ export async function POST(request: Request) {
 
   return NextResponse.json(newUser, { status: 201 });
 }
+
+export async function DELETE(request: Request) {
+  const { id } = await request.json();
+
+  if (!id) {
+    return NextResponse.json({ message: "Missing user ID" }, { status: 400 });
+  }
+
+  const updatedUsers = users.filter((user) => user.id !== id);
+
+  if (users.length === updatedUsers.length) {
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+  }
+
+  writeUsers(updatedUsers);
+
+  return NextResponse.json({ message: "User deleted successfully" }, { status: 200 });
+}
