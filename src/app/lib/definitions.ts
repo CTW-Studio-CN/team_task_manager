@@ -25,6 +25,10 @@ export type User = {
   role: 'admin' | 'user';
 };
 
+export type Settings = {
+  registrationOpen: boolean;
+};
+
 export type Comment = {
   id: number;
   taskId: number;

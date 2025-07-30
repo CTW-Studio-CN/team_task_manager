@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { comments, writeComments } from "../../lib/comments";
 import { Comment } from "../../lib/definitions";
-import { NextApiRequest } from "next";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

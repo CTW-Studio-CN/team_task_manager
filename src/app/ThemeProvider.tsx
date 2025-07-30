@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
 
 type ThemeContextType = {
   theme: string;
@@ -13,37 +13,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState("light-blue"); // Default theme
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    let initialTheme = "light-blue"; // Default theme
-
-    if (savedTheme) {
-      initialTheme = savedTheme;
-    } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      initialTheme = prefersDark ? "dark-blue" : "light-blue";
-    }
-    
-    const [mode, color] = initialTheme.split("-");
-    setTheme(initialTheme);
-    document.documentElement.setAttribute("data-theme", initialTheme);
-    // Ensure initial color is applied via setColor to handle custom hex codes
-    setColor(color); 
-  }, []);
-
-  const applyTheme = (newTheme: string) => {
+  const applyTheme = React.useCallback((newTheme: string) => {
     setTheme(newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
-  };
+  }, []);
 
-  const toggleMode = () => {
-    const [mode, color] = theme.split("-");
-    const newMode = mode === "dark" ? "light" : "dark";
-    applyTheme(`${newMode}-${color}`);
-  };
-
-  const colorMap: { [key: string]: string } = {
+  const colorMap: { [key: string]: string } = useMemo(() => ({
     blue: "#4f46e5", // indigo-600
     green: "#10b981", // emerald-500
     red: "#ef4444", // red-500
@@ -52,9 +28,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     pink: "#ec4899", // pink-500
     teal: "#14b8a6", // teal-500
     cyan: "#06b6d4", // cyan-500
-  };
+  }), []);
 
-  const setColor = (newColor: string) => {
+  const setColor = React.useCallback((newColor: string) => {
     const [mode] = theme.split("-");
     const fullThemeName = `${mode}-${newColor}`;
     applyTheme(fullThemeName);
@@ -70,6 +46,30 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       document.documentElement.style.setProperty("--primary-hover-color", primaryColorValue + "d0");
       document.documentElement.style.setProperty("--ring-color", primaryColorValue);
     });
+  }, [applyTheme, theme, colorMap]);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    let initialTheme = "light-blue"; // Default theme
+
+    if (savedTheme) {
+      initialTheme = savedTheme;
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      initialTheme = prefersDark ? "dark-blue" : "light-blue";
+    }
+    
+    const [, color] = initialTheme.split("-");
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+    // Ensure initial color is applied via setColor to handle custom hex codes
+    setColor(color); 
+  }, [setColor]);
+
+  const toggleMode = () => {
+    const [mode, color] = theme.split("-");
+    const newMode = mode === "dark" ? "light" : "dark";
+    applyTheme(`${newMode}-${color}`);
   };
 
   return (

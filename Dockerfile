@@ -1,7 +1,7 @@
 # Dockerfile for Next.js
 
 # Stage 1: Builder
-FROM docker.1ms.run/node:20-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -19,7 +19,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production
-FROM docker.1ms.run/node:20-alpine AS runner
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 

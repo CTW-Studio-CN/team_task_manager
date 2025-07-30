@@ -118,7 +118,7 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         taskId: selectedTask.id,
-        userId: (session.user as any).id,
+        userId: (session.user as User).id,
         text: newCommentText,
       }),
     });
@@ -129,7 +129,7 @@ export default function Home() {
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    if (!session || (session.user as any).role !== 'admin') return;
+    if (!session || (session.user as User).role !== 'admin') return;
     const res = await fetch('/api/comments', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -171,7 +171,7 @@ export default function Home() {
               {session ? (
                 <>
                 <span style={{ color: 'var(--foreground)' }}>欢迎, {session.user?.name}</span>
-                {(session.user as any)?.role === 'admin' && (
+                {(session.user as User)?.role === 'admin' && (
                   <Link href="/admin" style={{ color: 'var(--foreground)', transition: 'color 0.2s' }} className="hover:text-indigo-500">
                     管理
                   </Link>
@@ -504,7 +504,7 @@ export default function Home() {
                         <span className="font-semibold">{users.find(u => u.id === comment.userId)?.name || '未知用户'}</span>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-500">{new Date(comment.timestamp).toLocaleString()}</span>
-                          {(session?.user as any)?.role === 'admin' && (
+                          {(session?.user as User)?.role === 'admin' && (
                             <button
                               onClick={() => handleDeleteComment(comment.id)}
                               className="text-red-500 hover:text-red-700 font-bold"
