@@ -61,6 +61,28 @@ npm run dev
 
 现在，在浏览器中打开 [http://localhost:3000](http://localhost:3000) 即可看到应用。
 
+## 🐳 使用 Docker 部署
+
+你也可以使用 Docker 快速启动应用。
+
+### 1. 拉取 Docker 镜像
+
+从 Docker Hub 拉取最新的镜像：
+
+```bash
+docker pull freebird2913/team_task_manager:latest
+```
+
+### 2. 运行 Docker 容器
+
+使用以下命令在后台运行容器：
+
+```bash
+docker run -d -p 3000:3000 --name team-task-manager freebird2913/team_task_manager
+```
+
+应用将在 [http://localhost:3000](http://localhost:3000) 上可用。
+
 ## 📜 可用脚本
 
 *   `npm run dev`: 启动开发服务器 (使用 Turbopack)。
