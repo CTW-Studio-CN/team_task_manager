@@ -25,7 +25,7 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    if (status === "authenticated" && (session?.user as any)?.role === "admin") {
+    if (status === "authenticated" && session?.user?.role === "admin") {
       fetchUsers();
       fetchSettings();
     }
@@ -66,7 +66,7 @@ export default function AdminPage() {
       body: JSON.stringify({ registrationOpen: !registrationOpen }),
     });
     if (res.ok) {
-      const data = await res.json();
+      const data: { registrationOpen: boolean } = await res.json();
       setRegistrationOpen(data.registrationOpen);
     }
   };
@@ -75,7 +75,7 @@ export default function AdminPage() {
     return <p>Loading...</p>;
   }
 
-  if (status === "unauthenticated" || (session?.user as any)?.role !== "admin") {
+  if (status === "unauthenticated" || session?.user?.role !== "admin") {
     router.push("/login");
     return null;
   }

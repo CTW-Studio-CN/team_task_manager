@@ -17,7 +17,7 @@ function readTasks(): Task[] {
 export let tasks: Task[] = readTasks();
 
 export function getTasks({ projectId }: { projectId?: number } = {}): Task[] {
-  let allTasks = readTasks();
+  const allTasks = readTasks();
   if (projectId) {
     return allTasks.filter(task => task.projectId === projectId);
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,9 +17,6 @@ export default function Home() {
   const [newTaskText, setNewTaskText] = useState("");
   const [filter, setFilter] = useState<"all" | "todo" | "inprogress" | "done">("all");
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newCommentText, setNewCommentText] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
 
   const fetchTasks = (projectId: number | null = null) => {
@@ -99,47 +96,6 @@ export default function Home() {
     });
   };
 
-  const fetchComments = async (taskId: number) => {
-    const res = await fetch(`/api/comments?taskId=${taskId}`);
-    const data = await res.json();
-    setComments(data);
-  };
-
-  const handleSelectTask = (task: Task) => {
-    setSelectedTask(task);
-    fetchComments(task.id);
-  };
-
-  const handleAddComment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newCommentText.trim() === "" || !session || !selectedTask) return;
-    const res = await fetch("/api/comments", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        taskId: selectedTask.id,
-        userId: (session.user as any).id,
-        text: newCommentText,
-      }),
-    });
-    if (res.ok) {
-      fetchComments(selectedTask.id);
-      setNewCommentText("");
-    }
-  };
-
-  const handleDeleteComment = async (commentId: number) => {
-    if (!session || (session.user as any).role !== 'admin') return;
-    const res = await fetch('/api/comments', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: commentId }),
-    });
-    if (res.ok && selectedTask) {
-      fetchComments(selectedTask.id);
-    }
-  };
-
   const handleDeleteTask = async (id: number) => {
     if (!session) return;
     const res = await fetch(`/api/tasks`, {
@@ -171,7 +127,7 @@ export default function Home() {
               {session ? (
                 <>
                 <span style={{ color: 'var(--foreground)' }}>欢迎, {session.user?.name}</span>
-                {(session.user as any)?.role === 'admin' && (
+                {(session.user as User)?.role === 'admin' && (
                   <Link href="/admin" style={{ color: 'var(--foreground)', transition: 'color 0.2s' }} className="hover:text-indigo-500">
                     管理
                   </Link>
@@ -243,7 +199,6 @@ export default function Home() {
             <AnimatePresence>
               {filteredTasks.map((task) => (
                 <motion.li
-                  layout
                   key={task.id}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -453,13 +408,13 @@ export default function Home() {
                         <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{getAssigneeNames(task.assignedTo)}</span>
                         {session && (
                           <div className="flex items-center gap-2 flex-shrink-0">
-                            <button
-                              onClick={() => handleSelectTask(task)}
+                            <Link
+                              href={`/?taskId=${task.id}`}
                               className="font-semibold px-4 py-2 rounded-lg transition duration-200 shadow-sm"
                               style={{ backgroundColor: 'var(--blue-tag-bg)', color: 'var(--blue-tag-text)' }}
                             >
                               评论
-                            </button>
+                            </Link>
                             <button
                               onClick={() => setEditingTask(task)}
                               className="font-semibold px-4 py-2 rounded-lg transition duration-200 shadow-sm"
@@ -483,67 +438,12 @@ export default function Home() {
               ))}
             </AnimatePresence>
           </div>
-
-          {selectedTask && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-8"
-            >
-              <div className="rounded-xl shadow-lg p-8" style={{ backgroundColor: 'var(--card-background)' }}>
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>
-                    评论: {selectedTask.text}
-                  </h2>
-                  <button onClick={() => setSelectedTask(null)} className="font-bold">X</button>
-                </div>
-                <div className="mb-4 max-h-60 overflow-y-auto">
-                  {comments.map((comment) => (
-                    <div key={comment.id} className="p-3 mb-2 rounded-lg" style={{ backgroundColor: 'var(--input-background)'}}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold">{users.find(u => u.id === comment.userId)?.name || '未知用户'}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-500">{new Date(comment.timestamp).toLocaleString()}</span>
-                          {(session?.user as any)?.role === 'admin' && (
-                            <button
-                              onClick={() => handleDeleteComment(comment.id)}
-                              className="text-red-500 hover:text-red-700 font-bold"
-                            >
-                              X
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      <p>{comment.text}</p>
-                    </div>
-                  ))}
-                </div>
-                {session && (
-                  <form onSubmit={handleAddComment} className="flex items-center gap-4">
-                    <input
-                      type="text"
-                      value={newCommentText}
-                      onChange={(e) => setNewCommentText(e.target.value)}
-                      placeholder="添加评论..."
-                      className="flex-grow px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] transition duration-200"
-                      style={{ backgroundColor: 'var(--input-background)', borderColor: 'var(--border-color)' }}
-                    />
-                    <button
-                      type="submit"
-                      className="font-semibold px-6 py-3 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] focus:ring-opacity-75 transition duration-200 shadow-md"
-                      style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
-                    >
-                      发送
-                    </button>
-                  </form>
-                )}
-              </div>
-            </motion.div>
-          )}
           </div>
         </div>
-        <div className="lg:w-1/4 order-3 lg:order-3 flex-col gap-8">
-          <RecentComments />
+        <div className="lg:w-1/4 order-3 lg:order-3 flex flex-col gap-8">
+          <Suspense fallback={<div>Loading comments...</div>}>
+            <RecentComments />
+          </Suspense>
         </div>
       </div>
       </main>
