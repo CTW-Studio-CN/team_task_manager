@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
 
 type ThemeContextType = {
   theme: string;
@@ -19,7 +19,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("theme", newTheme);
   }, []);
 
-  const colorMap: { [key: string]: string } = {
+  const colorMap: { [key: string]: string } = useMemo(() => ({
     blue: "#4f46e5", // indigo-600
     green: "#10b981", // emerald-500
     red: "#ef4444", // red-500
@@ -28,7 +28,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     pink: "#ec4899", // pink-500
     teal: "#14b8a6", // teal-500
     cyan: "#06b6d4", // cyan-500
-  };
+  }), []);
 
   const setColor = React.useCallback((newColor: string) => {
     const [mode] = theme.split("-");
