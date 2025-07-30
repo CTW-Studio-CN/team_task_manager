@@ -4,6 +4,10 @@ on:
   push:
     branches: [ dev ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CI: true
   NEXT_TELEMETRY_DISABLED: 1
@@ -24,10 +28,9 @@ jobs:
         cache: 'npm'
 
     - name: '📦 Install dependencies'
-      run: npm install --no-audit
+      run: npm ci
 
-    - name: '🔌 Npm lint'
-      run: npm run lint
-
-    - name: '🏗️ Build Next.js'
-      run: npm run build
+    - name: ' lint and Build'
+      run: |
+        npm run lint
+        npm run build
