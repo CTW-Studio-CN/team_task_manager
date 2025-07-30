@@ -6,6 +6,29 @@ on:
       - master
 
 jobs:
+  build-and-lint:
+    name: Build and Lint
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: '🛎️ Checkout code'
+      uses: actions/checkout@v4
+
+    - name: '⎔ Setup Node.js 20.x'
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: '📦 Install dependencies'
+      run: npm install --no-audit
+
+    - name: '🔌 Npm lint'
+      run: npm run lint
+
+    - name: '🏗️ Build Next.js'
+      run: npm run build
+
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
