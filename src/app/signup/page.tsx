@@ -19,7 +19,7 @@ export default function SignupPage() {
         const res = await fetch("/api/settings");
         const data = await res.json();
         setRegistrationOpen(data.registrationOpen);
-      } catch (err) {
+      } catch {
         setError("无法加载注册设置。");
       } finally {
         setLoading(false);

@@ -16,10 +16,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const existingUser = users.find((user) => user.email === email);
-  if (existingUser) {
+  const existingUser  = users.find((user) => user.email === email);
+  if (existingUser ) {
     return NextResponse.json(
-      { message: "User with this email already exists" },
+      { message: "User  with this email already exists" },
       { status: 409 }
     );
   }
@@ -48,10 +48,10 @@ export async function DELETE(request: Request) {
   const updatedUsers = users.filter((user) => user.id !== id);
 
   if (users.length === updatedUsers.length) {
-    return NextResponse.json({ message: "User not found" }, { status: 404 });
+    return NextResponse.json({ message: "User  not found" }, { status: 404 });
   }
 
   writeUsers(updatedUsers);
 
-  return NextResponse.json({ message: "User deleted successfully" }, { status: 200 });
+  return NextResponse.json({ message: "User  deleted successfully" }, { status: 200 });
 }
