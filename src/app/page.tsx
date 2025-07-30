@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -441,7 +441,9 @@ export default function Home() {
           </div>
         </div>
         <div className="lg:w-1/4 order-3 lg:order-3 flex flex-col gap-8">
-          <RecentComments />
+          <Suspense fallback={<div>Loading comments...</div>}>
+            <RecentComments />
+          </Suspense>
         </div>
       </div>
       </main>
