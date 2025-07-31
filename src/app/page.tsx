@@ -3,9 +3,9 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // 导入 useRouter
 import { useTheme } from "./ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
-import ColorPickerModal from "./ColorPickerModal";
 import { Task, User, Comment } from "./lib/definitions";
 import Statistics from "./components/Statistics";
 import ProjectSelector from "./components/ProjectSelector";
@@ -13,8 +13,8 @@ import RecentComments from "./components/RecentComments";
 
 export default function Home() {
   const { data: session } = useSession();
+  const router = useRouter(); // 获取 router 实例
   const { setColor } = useTheme();
-  const [showColorPicker, setShowColorPicker] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
@@ -147,11 +147,11 @@ export default function Home() {
                   </Link>
                 )}
                 <button
-                  onClick={() => setShowColorPicker(true)}
+                  onClick={() => router.push('/settings')}
                   className="font-semibold px-4 py-2 rounded-lg transition duration-200"
                   style={{ backgroundColor: 'var(--secondary-button-bg)', color: 'var(--secondary-button-text)' }}
                 >
-                  主题
+                  设置
                 </button>
                 <button
                   onClick={() => signOut()}
@@ -174,12 +174,6 @@ export default function Home() {
           </div>
         </nav>
       </header>
-      {showColorPicker && (
-        <ColorPickerModal
-          onClose={() => setShowColorPicker(false)}
-          onColorSelect={setColor}
-        />
-      )}
       <main className="container mx-auto p-4 sm:p-6 lg:p-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-1/4 order-1 lg:order-1 flex flex-col gap-8">
