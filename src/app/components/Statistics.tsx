@@ -12,9 +12,10 @@ export default function Statistics({ progress }: StatisticsProps) {
       <h2 style={{ color: 'var(--foreground)' }} className="text-2xl font-semibold mb-4">任务进度</h2>
       <div className="mt-6">
         <h3 style={{ color: 'var(--foreground)' }} className="text-lg font-semibold mb-2">任务完成进度</h3>
-        <div className="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
+        <div className="w-full rounded-full h-4" style={{ backgroundColor: 'var(--progress-background)' }}>
           <motion.div
-            className="bg-blue-600 h-4 rounded-full"
+            className="h-4 rounded-full"
+            style={{ backgroundColor: 'var(--primary-color)' }}
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.5, ease: "easeInOut" }}

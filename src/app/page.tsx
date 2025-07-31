@@ -3,7 +3,9 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import { useTheme } from "./ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
+import ColorPickerModal from "./ColorPickerModal";
 import { Task, User, Comment } from "./lib/definitions";
 import Statistics from "./components/Statistics";
 import ProjectSelector from "./components/ProjectSelector";
@@ -11,6 +13,8 @@ import RecentComments from "./components/RecentComments";
 
 export default function Home() {
   const { data: session } = useSession();
+  const { setColor } = useTheme();
+  const [showColorPicker, setShowColorPicker] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
@@ -133,6 +137,13 @@ export default function Home() {
                   </Link>
                 )}
                 <button
+                  onClick={() => setShowColorPicker(true)}
+                  className="font-semibold px-4 py-2 rounded-lg transition duration-200"
+                  style={{ backgroundColor: 'var(--secondary-button-bg)', color: 'var(--secondary-button-text)' }}
+                >
+                  主题
+                </button>
+                <button
                   onClick={() => signOut()}
                   className="font-semibold px-4 py-2 rounded-lg transition duration-200"
                   style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
@@ -153,6 +164,12 @@ export default function Home() {
           </div>
         </nav>
       </header>
+      {showColorPicker && (
+        <ColorPickerModal
+          onClose={() => setShowColorPicker(false)}
+          onColorSelect={setColor}
+        />
+      )}
       <main className="container mx-auto p-4 sm:p-6 lg:p-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-1/4 order-1 lg:order-1 flex flex-col gap-8">
@@ -175,7 +192,7 @@ export default function Home() {
                     onChange={(e) => setNewTaskText(e.target.value)}
                     placeholder="添加新任务..."
                     className="flex-grow px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ring-[var(--ring-color)] transition duration-200"
-                    style={{ backgroundColor: 'var(--input-background)', borderColor: 'var(--border-color)' }}
+                    style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
                   />
                   <button
                     type="submit"
@@ -194,7 +211,7 @@ export default function Home() {
             <button onClick={() => setFilter("done")} className={`px-4 py-2 rounded-lg ${filter === 'done' ? '' : ''}`} style={{ backgroundColor: filter === 'done' ? 'var(--primary-color)' : 'var(--secondary-button-bg)', color: filter === 'done' ? 'white' : 'var(--secondary-button-text)' }}>已完成</button>
           </div>
 
-          <div>
+          <motion.div layout>
             <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--foreground)' }}>任务列表</h2>
             <AnimatePresence>
               {filteredTasks.map((task) => (
@@ -202,10 +219,10 @@ export default function Home() {
                   key={task.id}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 }}
-                  transition={{ duration: 0.3 }}
+                  exit={{ opacity: 0, transition: { duration: 0.3 } }}
+                  transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 30 }}
                   className="flex items-center justify-between p-4 mb-3 rounded-lg shadow-sm"
-                  style={{ backgroundColor: 'var(--input-background)' }}
+                  style={{ backgroundColor: 'var(--card-background)' }}
                 >
                   {editingTask?.id === task.id && session ? (
                     <div className="flex-grow flex flex-col gap-4">
@@ -437,7 +454,7 @@ export default function Home() {
                 </motion.li>
               ))}
             </AnimatePresence>
-          </div>
+          </motion.div>
           </div>
         </div>
         <div className="lg:w-1/4 order-3 lg:order-3 flex flex-col gap-8">

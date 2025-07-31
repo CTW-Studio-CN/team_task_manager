@@ -93,7 +93,7 @@ export default function RecentComments() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 30 }}
               className="p-3 rounded-lg"
-              style={{ backgroundColor: 'var(--input-background)' }}
+              style={{ backgroundColor: 'var(--card-background)' }}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="font-semibold">{getUserName(comment.userId)}</span>

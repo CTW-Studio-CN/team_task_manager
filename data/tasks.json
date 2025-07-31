@@ -3,7 +3,7 @@
     "id": 1,
     "text": "设计一个新的 logo",
     "completed": false,
-    "status": "inprogress",
+    "status": "todo",
     "assignedTo": [
       "1"
     ],

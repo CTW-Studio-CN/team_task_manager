@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "./ThemeProvider";
 
 interface ColorPickerModalProps {
   onClose: () => void;
@@ -13,6 +14,7 @@ const predefinedColors = [
 ];
 
 const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ onClose, onColorSelect }) => {
+  const { cardOpacity, setCardOpacity, wallpaper, setWallpaper } = useTheme();
   const [customColor, setCustomColor] = useState("");
 
   const handleCustomColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +78,35 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ onClose, onColorSel
               应用自定义颜色
             </button>
           </div>
-          <div className="flex justify-end">
+          <div className="mt-4">
+            <label htmlFor="cardOpacity" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              方块透明度
+            </label>
+            <input
+              id="cardOpacity"
+              type="range"
+              min="0.1"
+              max="1"
+              step="0.05"
+              value={cardOpacity}
+              onChange={(e) => setCardOpacity(parseFloat(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            />
+          </div>
+          <div className="mt-4">
+            <label htmlFor="wallpaperUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              壁纸 URL
+            </label>
+            <input
+              id="wallpaperUrl"
+              type="text"
+              value={wallpaper}
+              onChange={(e) => setWallpaper(e.target.value)}
+              placeholder="输入图片 URL..."
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+          <div className="flex justify-end mt-4">
             <button
               onClick={onClose}
               className="bg-gray-300 hover:bg-gray-400 text-gray-800 p-2 rounded-md"

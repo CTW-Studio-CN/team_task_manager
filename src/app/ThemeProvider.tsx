@@ -6,12 +6,18 @@ type ThemeContextType = {
   theme: string;
   toggleMode: () => void;
   setColor: (color: string) => void;
+  cardOpacity: number;
+  setCardOpacity: (opacity: number) => void;
+  wallpaper: string;
+  setWallpaper: (url: string) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState("light-blue"); // Default theme
+  const [cardOpacity, setCardOpacityState] = useState(1);
+  const [wallpaper, setWallpaperState] = useState("");
 
   const applyTheme = React.useCallback((newTheme: string) => {
     setTheme(newTheme);
@@ -48,7 +54,35 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     });
   }, [applyTheme, theme, colorMap]);
 
+  const setCardOpacity = (opacity: number) => {
+    setCardOpacityState(opacity);
+    document.documentElement.style.setProperty("--card-opacity", opacity.toString());
+    localStorage.setItem("cardOpacity", opacity.toString());
+  };
+
+  const setWallpaper = (url: string) => {
+    setWallpaperState(url);
+    document.documentElement.style.setProperty("--wallpaper-url", `url(${url})`);
+    localStorage.setItem("wallpaper", url);
+    if (url) {
+      document.body.classList.add("wallpaper-active");
+    } else {
+      document.body.classList.remove("wallpaper-active");
+    }
+  };
+
   useEffect(() => {
+    const savedOpacity = localStorage.getItem("cardOpacity");
+    if (savedOpacity) {
+      setCardOpacity(parseFloat(savedOpacity));
+    }
+
+    const savedWallpaper = localStorage.getItem("wallpaper");
+    if (savedWallpaper) {
+      setWallpaper(savedWallpaper);
+    } else {
+      document.body.classList.remove("wallpaper-active");
+    }
     const savedTheme = localStorage.getItem("theme");
     let initialTheme = "light-blue"; // Default theme
 
@@ -73,7 +107,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleMode, setColor }}>
+    <ThemeContext.Provider value={{ theme, toggleMode, setColor, cardOpacity, setCardOpacity, wallpaper, setWallpaper }}>
       {children}
     </ThemeContext.Provider>
   );

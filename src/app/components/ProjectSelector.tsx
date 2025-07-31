@@ -83,7 +83,7 @@ export default function ProjectSelector({ onSelectProject }: ProjectSelectorProp
             value={selectedProjectId || ''}
             onChange={handleSelectChange}
             style={{
-              backgroundColor: 'var(--input-background)',
+              backgroundColor: 'var(--card-background)',
               borderColor: 'var(--border-color)',
               color: 'var(--foreground)'
             }}
@@ -112,7 +112,7 @@ export default function ProjectSelector({ onSelectProject }: ProjectSelectorProp
             defaultValue={editingProject.name}
             onBlur={(e) => handleUpdateProject({ ...editingProject, name: e.target.value })}
             className="w-full px-3 py-2 border-2 rounded-lg"
-            style={{ backgroundColor: 'var(--input-background)', borderColor: 'var(--border-color)' }}
+            style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
           />
         </div>
       )}
@@ -124,7 +124,7 @@ export default function ProjectSelector({ onSelectProject }: ProjectSelectorProp
           onChange={(e) => setNewProjectName(e.target.value)}
           placeholder="新项目名称"
           className="flex-grow px-3 py-2 border-2 rounded-lg"
-          style={{ backgroundColor: 'var(--input-background)', borderColor: 'var(--border-color)' }}
+          style={{ backgroundColor: 'var(--card-background)', borderColor: 'var(--border-color)' }}
         />
         <button type="submit" className="px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}>添加</button>
       </form>
