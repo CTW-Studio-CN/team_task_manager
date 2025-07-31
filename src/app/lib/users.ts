@@ -4,7 +4,7 @@ import { User } from "./definitions";
 
 const usersFilePath = path.join(process.cwd(), "data", "users.json");
 
-function readUsers(): User[] {
+export function readUsers(): User[] {
   const jsonData = fs.readFileSync(usersFilePath, "utf-8");
   return JSON.parse(jsonData);
 }

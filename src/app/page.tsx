@@ -40,7 +40,7 @@ export default function Home() {
     fetch("/api/users")
       .then((res) => res.json())
       .then((data) => setUsers(data));
-  }, [selectedProjectId]);
+  }, [selectedProjectId, session]);
 
   useEffect(() => {
     let filtered = tasks;
@@ -120,10 +120,20 @@ export default function Home() {
     }).join(', ');
   };
 
+  const currentUser = users.find(u => u.id === session?.user?.id);
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
-      <header className="shadow-md" style={{ backgroundColor: 'var(--card-background)' }}>
-        <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
+    <div 
+      className="min-h-screen bg-cover bg-center" 
+      style={{ 
+        backgroundColor: 'var(--background)', 
+        color: 'var(--foreground)',
+        backgroundImage: currentUser?.backgroundImage ? `url(${currentUser.backgroundImage})` : 'none'
+      }}
+    >
+      <div className="min-h-screen" style={{ backgroundColor: 'rgba(var(--background-rgb), 0.8)', color: 'var(--foreground)' }}>
+        <header className="shadow-md" style={{ backgroundColor: 'var(--card-background)' }}>
+          <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
             <Link href="/" className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
               任务管理器
             </Link>
@@ -464,6 +474,7 @@ export default function Home() {
         </div>
       </div>
       </main>
+      </div>
     </div>
   );
 }

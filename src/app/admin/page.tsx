@@ -59,6 +59,29 @@ export default function AdminPage() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, userId: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      const base64Image = reader.result as string;
+      const res = await fetch(`/api/users/${userId}/background`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64Image }),
+      });
+
+      if (res.ok) {
+        alert('背景图片上传成功');
+        fetchUsers();
+      } else {
+        alert('背景图片上传失败');
+      }
+    };
+  };
+
   const handleToggleRegistration = async () => {
     const res = await fetch("/api/settings", {
       method: "POST",
@@ -174,6 +197,19 @@ export default function AdminPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{user.email}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{user.role}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, user.id)}
+                        className="hidden"
+                        id={`file-upload-${user.id}`}
+                      />
+                      <label
+                        htmlFor={`file-upload-${user.id}`}
+                        className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200 cursor-pointer mr-4"
+                      >
+                        上传背景
+                      </label>
                       <button
                         onClick={() => handleDeleteUser(user.id)}
                         className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-200"

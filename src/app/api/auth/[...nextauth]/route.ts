@@ -19,7 +19,7 @@ const handler = NextAuth({
         const user = users.find((user) => user.email === credentials.email);
 
         if (user && user.password === credentials.password) {
-          return { id: user.id, name: user.name, email: user.email, role: user.role };
+          return { id: user.id, name: user.name, email: user.email, role: user.role, backgroundImage: user.backgroundImage };
         } else {
           return null;
         }
@@ -34,6 +34,7 @@ const handler = NextAuth({
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.backgroundImage = user.backgroundImage;
       }
       return token;
     },
@@ -41,6 +42,7 @@ const handler = NextAuth({
       if (session?.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.backgroundImage = token.backgroundImage as string;
       }
       return session;
     },

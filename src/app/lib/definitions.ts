@@ -23,6 +23,7 @@ export type User = {
   email: string;
   password?: string;
   role: 'admin' | 'user';
+  backgroundImage?: string;
 };
 
 export type Settings = {
