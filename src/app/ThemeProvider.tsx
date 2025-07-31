@@ -1,26 +1,57 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
+import { ThemeSettings } from "./lib/definitions";
 
 type ThemeContextType = {
-  theme: string;
+  themeSettings: ThemeSettings;
+  setThemeSettings: (settings: ThemeSettings) => void;
   toggleMode: () => void;
   setColor: (color: string) => void;
   cardOpacity: number;
   setCardOpacity: (opacity: number) => void;
-  wallpaper: string;
+  wallpaper?: string;
   setWallpaper: (url: string) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState("light-blue"); // Default theme
-  const [cardOpacity, setCardOpacityState] = useState(1);
-  const [wallpaper, setWallpaperState] = useState("");
+  const [themeSettings, setThemeSettingsState] = useState<ThemeSettings>(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem("theme");
+      const savedOpacity = localStorage.getItem("cardOpacity");
+      const savedWallpaper = localStorage.getItem("wallpaper");
+
+      let initialTheme = "light-blue";
+      if (savedTheme) {
+        initialTheme = savedTheme;
+      } else {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        initialTheme = prefersDark ? "dark-blue" : "light-blue";
+      }
+
+      return {
+        darkMode: initialTheme.startsWith("dark"),
+        primaryColor: initialTheme.split("-")[1],
+        transparency: savedOpacity ? parseFloat(savedOpacity) : 1,
+        wallpaper: savedWallpaper || "",
+      };
+    }
+    return {
+      darkMode: false,
+      primaryColor: "blue",
+      transparency: 1,
+      wallpaper: "",
+    };
+  });
 
   const applyTheme = React.useCallback((newTheme: string) => {
-    setTheme(newTheme);
+    setThemeSettingsState(prev => ({
+      ...prev,
+      darkMode: newTheme.startsWith("dark"),
+      primaryColor: newTheme.split("-")[1],
+    }));
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
   }, []);
@@ -37,31 +68,32 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   }), []);
 
   const setColor = React.useCallback((newColor: string) => {
-    const [mode] = theme.split("-");
-    const fullThemeName = `${mode}-${newColor}`;
-    applyTheme(fullThemeName);
+    const newTheme = `${themeSettings.darkMode ? "dark" : "light"}-${newColor}`;
+    applyTheme(newTheme);
 
-    let primaryColorValue = newColor;
-    if (colorMap[newColor]) {
-      primaryColorValue = colorMap[newColor];
-    }
+    const primaryColorValue = colorMap[newColor] || newColor;
 
-    // 使用 requestAnimationFrame 确保平滑过渡
     requestAnimationFrame(() => {
       document.documentElement.style.setProperty("--primary-color", primaryColorValue);
       document.documentElement.style.setProperty("--primary-hover-color", primaryColorValue + "d0");
       document.documentElement.style.setProperty("--ring-color", primaryColorValue);
     });
-  }, [applyTheme, theme, colorMap]);
+  }, [applyTheme, themeSettings.darkMode, colorMap]);
 
   const setCardOpacity = (opacity: number) => {
-    setCardOpacityState(opacity);
+    setThemeSettingsState(prev => ({
+      ...prev,
+      transparency: opacity,
+    }));
     document.documentElement.style.setProperty("--card-opacity", opacity.toString());
     localStorage.setItem("cardOpacity", opacity.toString());
   };
 
   const setWallpaper = (url: string) => {
-    setWallpaperState(url);
+    setThemeSettingsState(prev => ({
+      ...prev,
+      wallpaper: url,
+    }));
     document.documentElement.style.setProperty("--wallpaper-url", `url(${url})`);
     localStorage.setItem("wallpaper", url);
     if (url) {
@@ -72,42 +104,40 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const savedOpacity = localStorage.getItem("cardOpacity");
-    if (savedOpacity) {
-      setCardOpacity(parseFloat(savedOpacity));
-    }
+    document.documentElement.setAttribute("data-theme", `${themeSettings.darkMode ? "dark" : "light"}-${themeSettings.primaryColor}`);
+    document.documentElement.style.setProperty("--card-opacity", themeSettings.transparency.toString());
+    document.documentElement.style.setProperty("--wallpaper-url", `url(${themeSettings.wallpaper})`);
 
-    const savedWallpaper = localStorage.getItem("wallpaper");
-    if (savedWallpaper) {
-      setWallpaper(savedWallpaper);
+    if (themeSettings.wallpaper) {
+      document.body.classList.add("wallpaper-active");
     } else {
       document.body.classList.remove("wallpaper-active");
     }
-    const savedTheme = localStorage.getItem("theme");
-    let initialTheme = "light-blue"; // Default theme
 
-    if (savedTheme) {
-      initialTheme = savedTheme;
-    } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      initialTheme = prefersDark ? "dark-blue" : "light-blue";
-    }
-    
-    const [, color] = initialTheme.split("-");
-    setTheme(initialTheme);
-    document.documentElement.setAttribute("data-theme", initialTheme);
-    // Ensure initial color is applied via setColor to handle custom hex codes
-    setColor(color); 
-  }, [setColor]);
+    const primaryColorValue = colorMap[themeSettings.primaryColor] || themeSettings.primaryColor;
+    requestAnimationFrame(() => {
+      document.documentElement.style.setProperty("--primary-color", primaryColorValue);
+      document.documentElement.style.setProperty("--primary-hover-color", primaryColorValue + "d0");
+      document.documentElement.style.setProperty("--ring-color", primaryColorValue);
+    });
+  }, [themeSettings, colorMap]);
 
   const toggleMode = () => {
-    const [mode, color] = theme.split("-");
-    const newMode = mode === "dark" ? "light" : "dark";
-    applyTheme(`${newMode}-${color}`);
+    const newMode = themeSettings.darkMode ? "light" : "dark";
+    applyTheme(`${newMode}-${themeSettings.primaryColor}`);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleMode, setColor, cardOpacity, setCardOpacity, wallpaper, setWallpaper }}>
+    <ThemeContext.Provider value={{
+      themeSettings,
+      setThemeSettings: setThemeSettingsState,
+      toggleMode,
+      setColor,
+      cardOpacity: themeSettings.transparency,
+      setCardOpacity,
+      wallpaper: themeSettings.wallpaper,
+      setWallpaper,
+    }}>
       {children}
     </ThemeContext.Provider>
   );

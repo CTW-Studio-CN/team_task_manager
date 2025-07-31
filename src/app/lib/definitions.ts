@@ -24,6 +24,7 @@ export type User = {
   password?: string;
   role: 'admin' | 'user';
   backgroundImage?: string;
+  themeSettings?: ThemeSettings;
 };
 
 export type Settings = {
@@ -36,4 +37,11 @@ export type Comment = {
   userId: string;
   text: string;
   timestamp: string;
+};
+
+export type ThemeSettings = {
+  darkMode: boolean;
+  primaryColor: string;
+  transparency: number;
+  wallpaper?: string;
 };
