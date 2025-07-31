@@ -4,7 +4,7 @@ import { ThemeSettings } from '../../../../lib/definitions';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   const { id } = params;
   const user = users.find((u) => u.id === id);
@@ -27,7 +27,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   const { id } = params;
   const updatedSettings: Partial<ThemeSettings> = await request.json();

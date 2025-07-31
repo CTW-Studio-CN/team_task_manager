@@ -4,7 +4,7 @@ import { User } from '@/app/lib/definitions';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   const { id } = params;
   const users = readUsers();

@@ -13,33 +13,33 @@ export default function RecentComments() {
   const [users, setUsers] = useState<User[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  const fetchComments = () => {
-    const url = taskId ? `/api/comments?taskId=${taskId}` : "/api/comments";
-    fetch(url)
-      .then((res) => res.json())
-      .then((data: Comment[]) => {
-        const sortedData = [...data].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-        if (taskId) {
-          setComments(sortedData);
-        } else {
-          setComments(sortedData.slice(0, 5));
-        }
-      });
-  };
-
-  const fetchUsers = () => {
-    fetch("/api/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data));
-  };
-
-  const fetchTasks = () => {
-    fetch("/api/tasks")
-      .then((res) => res.json())
-      .then((data) => setTasks(data));
-  };
-
   useEffect(() => {
+    const fetchComments = () => {
+      const url = taskId ? `/api/comments?taskId=${taskId}` : "/api/comments";
+      fetch(url)
+        .then((res) => res.json())
+        .then((data: Comment[]) => {
+          const sortedData = [...data].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          if (taskId) {
+            setComments(sortedData);
+          } else {
+            setComments(sortedData.slice(0, 5));
+          }
+        });
+    };
+
+    const fetchUsers = () => {
+      fetch("/api/users")
+        .then((res) => res.json())
+        .then((data) => setUsers(data));
+    };
+
+    const fetchTasks = () => {
+      fetch("/api/tasks")
+        .then((res) => res.json())
+        .then((data) => setTasks(data));
+    };
+
     fetchComments();
     fetchUsers();
     fetchTasks();

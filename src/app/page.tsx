@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation"; // 导入 useRouter
 import { useTheme } from "./ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
-import { Task, User, Comment } from "./lib/definitions";
+import { Task, User } from "./lib/definitions";
 import Statistics from "./components/Statistics";
 import ProjectSelector from "./components/ProjectSelector";
 import RecentComments from "./components/RecentComments";
