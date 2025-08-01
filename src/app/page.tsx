@@ -14,7 +14,7 @@ import RecentComments from "./components/RecentComments";
 export default function Home() {
   const { data: session } = useSession();
   const router = useRouter(); // 获取 router 实例
-  const { setColor } = useTheme();
+  const { } = useTheme();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);

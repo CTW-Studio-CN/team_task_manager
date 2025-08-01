@@ -4,9 +4,9 @@ import { ThemeSettings } from '../../../../lib/definitions';
 
 export async function GET(
   request: Request,
-  { params }: any
+  context: any
 ) {
-  const { id } = params;
+  const { id } = context.params;
   const user = users.find((u) => u.id === id);
 
   if (!user) {
@@ -27,9 +27,9 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: any
+  context: any
 ) {
-  const { id } = params;
+  const { id } = context.params;
   const updatedSettings: Partial<ThemeSettings> = await request.json();
 
   const userIndex = users.findIndex((u) => u.id === id);

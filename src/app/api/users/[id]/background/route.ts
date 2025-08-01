@@ -4,9 +4,9 @@ import { User } from '@/app/lib/definitions';
 
 export async function POST(
   req: NextRequest,
-  { params }: any
+  context: any
 ) {
-  const { id } = params;
+  const { id } = context.params;
   const users = readUsers();
   const user = users.find((u: User) => u.id === id);
 
