@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { readUsers, writeUsers } from '@/app/lib/users';
 import { User } from '@/app/lib/definitions';
 
 export async function POST(
-  req: NextRequest,
+  request: Request,
   context: any
 ) {
   const { id } = context.params;
@@ -14,7 +14,7 @@ export async function POST(
     return NextResponse.json({ message: 'User not found' }, { status: 404 });
   }
 
-  const data = await req.json();
+  const data = await request.json();
   const { image } = data;
 
   if (!image) {
